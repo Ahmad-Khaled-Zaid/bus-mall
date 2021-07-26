@@ -25,6 +25,7 @@ img{
   ul{
     margin-top: 50px;
     margin-left: 43%;
+    margin-bottom: 200px;
   }
   
   li{
@@ -35,9 +36,14 @@ img{
   }
 
   #button{
-    color: white;
+color: white;
 position:absolute ; 
 left: 45%;
 padding: 10px 20px;
 background-color: green;
+/* margin-bottom: 500px; */
+ }
+
+ #myChart{
+   padding-top: 100px;
  }
