@@ -1,29 +1,30 @@
 'use strict';
+let imagesDiv=document.getElementById('images-div');
+let leftImageElement= document.getElementById('left-image');
+let middleImageElement= document.getElementById('middle-image');
+let rightImageElement= document.getElementById('right-image');
+let buttonElement=document.getElementById('button');
 
-let leftImageElement=document.getElementById('left-pic');
-let middleImageElement=document.getElementById('middle-pic');
-let rightImageElement=document.getElementById('right-pic');
-let sectionElement=document.getElementById('imgSection');
 
-let maxAttepms=10;
-let counter=0;
+
+let maxAttempts=25;
+let userAttemptsCounter=0;
+
+
 let leftImageIndex;
-let rightImageIndex;
 let middleImageIndex;
+let rightImageIndex;
 
-
-function BusMall(name,src)
-{
-  this.name=name;
-  this.src=src;
+function BusMall(name,src) {
+  this.name= name;
+  this.source= src;
   this.votes=0;
-  this.shown=0;
   BusMall.all.push(this);
-
+  this.shown=0;
 
 }
-BusMall.all=[];
 
+BusMall.all=[];
 
 new BusMall('bag','pic/bag.jpg');
 new BusMall('banana','pic/banana.jpg');
@@ -46,80 +47,102 @@ new BusMall('water-can','pic/water-can.jpg');
 new BusMall('wine-glass','pic/wine-glass.jpg');
 
 
-// from w3 schools
-function getRandomIndex() {
 
+function getRandomIndex() {
+  // 0=>6
   return Math.floor(Math.random() * BusMall.all.length);
 }
-// getRandomIndex();
-// console.log(BusMall.all);
+
+console.log(getRandomIndex());
 
 
+// render
 
-function renderThreeElements() {
+function renderTwoImages() {
 
   leftImageIndex=getRandomIndex();
-  rightImageIndex=getRandomIndex();
   middleImageIndex=getRandomIndex();
+  rightImageIndex=getRandomIndex();
 
-  while (leftImageIndex===middleImageIndex || leftImageIndex===rightImageIndex || rightImageIndex===middleImageIndex) {
-    middleImageIndex=getRandomIndex();
-
+  while (leftImageIndex===rightImageIndex ||leftImageIndex===middleImageIndex||rightImageIndex===middleImageIndex) {
+    rightImageIndex=getRandomIndex();
+    leftImageIndex=getRandomIndex();
   }
-  leftImageElement.src=BusMall.all[leftImageIndex].src;
-  rightImageElement.src=BusMall.all[rightImageIndex].src;
-  middleImageElement.src=BusMall.all[middleImageIndex].src;
+
+
+  leftImageElement.src=BusMall.all[leftImageIndex].source;
+  BusMall.all[leftImageIndex].shown++;
+  middleImageElement.src=BusMall.all[middleImageIndex].source;
+  BusMall.all[middleImageIndex].shown++;
+  rightImageElement.src=BusMall.all[rightImageIndex].source;
+  BusMall.all[rightImageIndex].shown++;
+
+
+
 }
 
-renderThreeElements();
+renderTwoImages();
 
-sectionElement.addEventListener('click',handleUserClick);
+
+imagesDiv.addEventListener('click',handleUserClick);
+
+
 
 
 function handleUserClick(event) {
 
   console.log(event.target.id);
 
-  counter++;
-  if (counter<maxAttepms) {
+
+
+
+  if (userAttemptsCounter<maxAttempts) {
 
 
     if (event.target.id==='left-image') {
 
       BusMall.all[leftImageIndex].votes++;
-      console.log(BusMall.all[leftImageIndex]);
 
-    }
-    else {
+    }else if(event.target.id==='right-image'){
       BusMall.all[rightImageIndex].votes++;
-      console.log(BusMall.all[rightImageIndex]);
+    }else if(event.target.id==='middle-image'){
+      BusMall.all[middleImageIndex].votes++;
+    }else{
+      alert('please click on the images');
+      userAttemptsCounter--;
     }
 
-    else{
-        BusMall.all[middleImageIndex].votes++;
-      console.log(BusMall.all[middleImageIndex]);
-    }
-
-    renderThreeElements();
+    renderTwoImages();
 
   }else{
+    let buttonElement=document.getElementById('button');
+    buttonElement.hidden=false;
+    buttonElement.addEventListener('click',showingList);
 
-    let list= document.getElementById('results-list');
 
-    for (let i = 0; i < BusMall.all.length; i++) {
-      // const element = goats[i];
-      let listItem=document.createElement('li');
 
-      list.appendChild(listItem);
 
-      listItem.textContent=`${ BusMall.all[i].name} has ${ BusMall.all[i].votes} votes`;
-
-    }
+    imagesDiv.removeEventListener('click',handleUserClick);
 
   }
+  userAttemptsCounter++;
+
 }
 
 
+function showingList(){
 
+  let list= document.getElementById('results-list');
+
+  for (let i = 0; i < BusMall.all.length; i++) {
+    let listItem=document.createElement('li');
+
+    list.appendChild(listItem);
+
+    listItem.textContent=`${BusMall.all[i].name} has ${BusMall.all[i].votes} votes`;
+
+  }
+  buttonElement.removeEventListener('click',showingList);
+}
 
 
