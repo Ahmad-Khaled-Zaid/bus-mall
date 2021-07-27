@@ -8,7 +8,7 @@ let buttonElement = document.getElementById('button');
 
 
 let maxAttempts = 25;
-let userAttemptsCounter = 1;
+let userAttemptsCounter = 0;
 
 
 let leftImageIndex;
@@ -19,7 +19,7 @@ let namesArr = [];
 let votesArr = [];
 
 let shownArr = [];
-let picIndex=[];
+let picIndex = [];
 // let picIndex=[];
 
 
@@ -32,10 +32,51 @@ function BusMall(name, src) {
   BusMall.all.push(this);
   this.shown = 0;
   namesArr.push(this.name);
-
+  BusMall.chioces.push(this);
 
 
 }
+
+BusMall.chioces = [];
+BusMall.prototype.chioces = function () {
+  // console.log(chioces);
+};
+
+function updateStorage() {
+
+  // console.log(BusMall.chioces);
+
+  let stringArr = JSON.stringify(BusMall.chioces);
+  // console.log(stringArr);
+
+  localStorage.setItem('chioces', stringArr);
+
+
+}
+
+
+function getchoices() {
+  let data = localStorage.getItem('chioces');
+  // console.log(data);
+
+
+  let parsedArr = JSON.parse(data);
+  console.log(parsedArr);
+  if (parsedArr !== null) {
+
+
+    for (let i = 0; i < parsedArr.length; i++) {
+      new BusMall(parsedArr[i].name,parsedArr[i].source,parsedArr[i].votes,parsedArr[i].shown);
+
+    }
+    // console.log(BusMall.chioces);
+
+  }
+  renderTwoImages();
+
+}
+
+
 
 
 BusMall.all = [];
@@ -75,7 +116,7 @@ function renderTwoImages() {
 
 
 
-  while (leftImageIndex === rightImageIndex || leftImageIndex === middleImageIndex || rightImageIndex === middleImageIndex || picIndex.includes(leftImageIndex) ||picIndex.includes(rightImageIndex) || picIndex.includes(middleImageIndex)) {
+  while (leftImageIndex === rightImageIndex || leftImageIndex === middleImageIndex || rightImageIndex === middleImageIndex || picIndex.includes(leftImageIndex) || picIndex.includes(rightImageIndex) || picIndex.includes(middleImageIndex)) {
 
     leftImageIndex = getRandomIndex();
     middleImageIndex = getRandomIndex();
@@ -83,7 +124,7 @@ function renderTwoImages() {
 
   }
   picIndex = [leftImageIndex, middleImageIndex, rightImageIndex];
-  console.log(picIndex);
+  // console.log(picIndex);
 
 
 
@@ -116,7 +157,7 @@ function handleUserClick(event) {
 
 
 
-  if (userAttemptsCounter < maxAttempts) {
+  if (userAttemptsCounter <= maxAttempts) {
 
 
     if (event.target.id === 'left-image') {
@@ -152,6 +193,7 @@ function handleUserClick(event) {
     // console.log(votesArr);
     imagesDiv.removeEventListener('click', handleUserClick);
     showChart();
+    updateStorage();
 
 
 
@@ -176,6 +218,7 @@ function showingList() {
 
   }
   buttonElement.removeEventListener('click', showingList);
+
 
 }
 
@@ -235,5 +278,5 @@ function showChart() {
 
 }
 
-
+getchoices();
 
