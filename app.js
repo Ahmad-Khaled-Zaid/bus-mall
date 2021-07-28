@@ -24,32 +24,31 @@ let picIndex = [];
 
 
 
-
 function BusMall(name, src) {
   this.name = name;
   this.source = src;
   this.votes = 0;
-  BusMall.all.push(this);
   this.shown = 0;
   namesArr.push(this.name);
-  BusMall.chioces.push(this);
+  BusMall.all.push(this);
+
+  // BusMall.chioces.push(this);
 
 
 }
 
-BusMall.chioces = [];
-BusMall.prototype.chioces = function () {
-  // console.log(chioces);
-};
+
+
+// BusMall.chioces = [];
+BusMall.all = [];
+
 
 function updateStorage() {
 
-  // console.log(BusMall.chioces);
+  let arrayString = JSON.stringify(BusMall.all);
 
-  let stringArr = JSON.stringify(BusMall.chioces);
-  // console.log(stringArr);
 
-  localStorage.setItem('chioces', stringArr);
+  localStorage.setItem('chioces', arrayString);
 
 
 }
@@ -57,29 +56,31 @@ function updateStorage() {
 
 function getchoices() {
   let data = localStorage.getItem('chioces');
-  // console.log(data);
-
-
   let parsedArr = JSON.parse(data);
+
   console.log(parsedArr);
   if (parsedArr !== null) {
 
+    BusMall.all = [];
 
     for (let i = 0; i < parsedArr.length; i++) {
-      new BusMall(parsedArr[i].name,parsedArr[i].source,parsedArr[i].votes,parsedArr[i].shown);
+      let newBusMall=new BusMall(parsedArr[i].name,parsedArr[i].source);
+      newBusMall.votes=parsedArr[i].votes;
+      newBusMall.shown=parsedArr[i].shown;
+
 
     }
-    // console.log(BusMall.chioces);
 
   }
-  renderTwoImages();
+  // renderTwoImages();
 
 }
+// BusMall.prototype.chioces = function () {
+// };
 
 
 
 
-BusMall.all = [];
 new BusMall('bag', 'pic/bag.jpg');
 new BusMall('banana', 'pic/banana.jpg');
 new BusMall('bathroom', 'pic/bathroom.jpg');
@@ -99,7 +100,7 @@ new BusMall('tauntaun', 'pic/tauntaun.jpg');
 new BusMall('unicorn', 'pic/unicorn.jpg');
 new BusMall('water-can', 'pic/water-can.jpg');
 new BusMall('wine-glass', 'pic/wine-glass.jpg');
-
+console.log(namesArr);
 
 
 function getRandomIndex() {
@@ -192,8 +193,8 @@ function handleUserClick(event) {
 
     // console.log(votesArr);
     imagesDiv.removeEventListener('click', handleUserClick);
-    showChart();
     updateStorage();
+    showChart();
 
 
 
@@ -221,7 +222,7 @@ function showingList() {
 
 
 }
-
+// console.log(BusMall.namesArr);
 
 function showChart() {
   const data = {
@@ -242,9 +243,9 @@ function showChart() {
       borderWidth: 1
     },
     {
-      label: 'Shown',
+      label: 'showen',
       data: shownArr,
-      backgroundColor: 'rgb(232,167,0)',
+      backgroundColor: 'yellow',
       borderColor: [
         'rgb(255, 99, 132)',
         'rgb(255, 159, 64)',
@@ -256,6 +257,7 @@ function showChart() {
       ],
       borderWidth: 1
     }
+
     ]
   };
 
@@ -279,4 +281,3 @@ function showChart() {
 }
 
 getchoices();
-
